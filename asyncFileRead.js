@@ -8,10 +8,9 @@ fs.readFile("./txt/start.txt", "utf-8", (err1, data1) => {
         `${data2} \n${data3} \nFinalized`,
         "utf-8",
         (err4) => {
-          console.log(err1);
-          console.log(err2);
-          console.log(err3);
-          console.log(err4);
+          if (err4) {
+            console.log("Error..........");
+          }
         }
       );
     });
