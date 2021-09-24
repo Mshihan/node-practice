@@ -1,0 +1,26 @@
+{
+  "name": "node-farm",
+  "version": "1.0.0",
+  "description": "Learning project of node",
+  "main": "simpleApi.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon simpleApi.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mshihan/node-practice.git"
+  },
+  "author": "Mohamed Sihan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mshihan/node-practice/issues"
+  },
+  "homepage": "https://github.com/Mshihan/node-practice#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  },
+  "dependencies": {
+    "slugify": "^1.6.0"
+  }
+}
