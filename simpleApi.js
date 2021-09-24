@@ -1,23 +1,17 @@
 const http = require("http");
 const fs = require("fs");
 const url = require("url");
+const slugify = require("slugify");
 const replaceTemplate = require("./modules/replateTemplate");
 
-const tempOverview = fs.readFileSync(
-  `${__dirname}/templates/template-overview.html`,
-  "utf-8"
-);
-const tempCard = fs.readFileSync(
-  `${__dirname}/templates/template-card.html`,
-  "utf-8"
-);
-const tempProduct = fs.readFileSync(
-  `${__dirname}/templates/template-product.html`,
-  "utf-8"
-);
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, "utf-8");
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, "utf-8");
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, "utf-8");
 
 const data = fs.readFileSync("./dev-data/data.json", "utf-8");
 const dataObj = JSON.parse(data);
+
+const products = dataObj.map((el) => slugify(el.productName, { lower: true }));
 
 const server = http.createServer((req, res) => {
   const { query, pathname } = url.parse(req.url, true);
@@ -28,9 +22,7 @@ const server = http.createServer((req, res) => {
       "Content-type": "text/html",
     });
 
-    const cardHtml = dataObj
-      .map((el) => replaceTemplate(tempCard, el))
-      .join("");
+    const cardHtml = dataObj.map((el) => replaceTemplate(tempCard, el)).join("");
     let overviewPage = tempOverview.replace("{%PRODUCTS%}", cardHtml);
     res.end(overviewPage);
 
@@ -46,6 +38,9 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {
       "Content-type": "text/html",
     });
+
+    console.log(products[query.id]);
+
     const product = dataObj[query.id];
     const template = replaceTemplate(tempProduct, product);
     res.end(template);
