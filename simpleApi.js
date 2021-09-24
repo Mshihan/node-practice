@@ -1,5 +1,6 @@
 const http = require("http");
 const fs = require("fs");
+const url = require("url");
 
 const replaceTemplate = (temp, product) => {
   let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
@@ -7,7 +8,6 @@ const replaceTemplate = (temp, product) => {
   output = output.replace(/{%QUANTITY%}/g, product.quantity);
   output = output.replace(/{%PRICE%}/g, product.price);
   output = output.replace(/{%ID%}/g, product.id);
-
   output = output.replace(/{%DESCRIPTION%}/g, product.description);
   output = output.replace(/{%FROM%}/g, product.from);
   output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
@@ -35,10 +35,10 @@ const data = fs.readFileSync("./dev-data/data.json", "utf-8");
 const dataObj = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-  const pathName = req.url;
+  const { query, pathname } = url.parse(req.url, true);
 
   //Path Overview or Landing page
-  if (pathName === "/") {
+  if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, {
       "Content-type": "text/html",
     });
@@ -50,18 +50,27 @@ const server = http.createServer((req, res) => {
     res.end(overviewPage);
 
     //Api path
-  } else if (pathName === "/api") {
+  } else if (pathname === "/api") {
     res.writeHead(200, {
       "Content-type": "application/json",
     });
     res.end(data);
 
-    //Not found path
+    //Products path
+  } else if (pathname === "/product") {
+    res.writeHead(200, {
+      "Content-type": "text/html",
+    });
+    const product = dataObj[query.id];
+    const template = replaceTemplate(tempProduct, product);
+    res.end(template);
+
+    //Not found
   } else {
     res.writeHead(200, {
       "Content-type": "text/html",
     });
-    res.end("<h1>Site is not found 💥</h1>");
+    res.end("<h1>Site is not found</h1>");
   }
 });
 
